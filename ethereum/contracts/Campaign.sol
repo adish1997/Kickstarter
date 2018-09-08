@@ -4,12 +4,12 @@ contract CampaignFactory {
     
     address[] public deployedCampaigns;
     
-    function deployCampaign(uint minimum) {
-       address newwCampaign = new Campaign(minimum, msg.sender);
-       deployedCampaigns.push(newwCampaign);
+    function createCampaign(uint minimum) {
+       address newCampaign = new Campaign(minimum, msg.sender);
+       deployedCampaigns.push(newCampaign);
     }
     
-    function getDeployedContract() public view returns (address[]) {
+    function getDeployedCampaigns() public view returns (address[]) {
         
         return deployedCampaigns;
     }
@@ -41,7 +41,7 @@ contract Campaign {
         minimumContribution = minimum;
     }
     
-    function Contribute() public payable {
+    function contribute() public payable {
         require(msg.value > minimumContribution);
         
         approvers[msg.sender] = true;
@@ -83,5 +83,21 @@ contract Campaign {
         request.recipient.transfer(request.value);
         request.complete = true;
         
+    }
+
+    function getSummary() public view returns(
+        uint, uint, uint, uint, address) {
+
+        return (
+            minimumContribution,
+            this.balance,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestscount() public view returns (uint) {
+        return requests.length;
     }
 }   
